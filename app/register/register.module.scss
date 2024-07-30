@@ -1,0 +1,28 @@
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+
+  background: linear-gradient(-45deg, #ee76522a, #e73c7e3a, #23a5d52c, #0063ba37);
+  background-size: 200% 200%;
+  background-position: 100% 50%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-bottom: 40px;
+}
+
+.link {
+  color: black;
+}

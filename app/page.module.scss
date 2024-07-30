@@ -1,0 +1,46 @@
+.bg {
+  background: linear-gradient(-45deg, #ee7652bf, #e73c7eaa, #23a5d59d, #0063ba9a);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.title {
+  color: white;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  color: white;
+  margin-bottom: 30px;
+}
+
+.authors {
+  color: white;
+  margin-bottom: 50px;
+
+  a {
+    color: white;
+  }
+}
