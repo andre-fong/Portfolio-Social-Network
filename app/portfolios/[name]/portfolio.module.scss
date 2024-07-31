@@ -1,0 +1,52 @@
+.container {
+  flex: 1;
+  padding: 65px 60px 70px 50px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 2.5em;
+  margin-bottom: 30px;
+}
+
+.value_row {
+  display: flex;
+  gap: 20px;
+  align-items: baseline;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.section_title {
+  font-weight: 500;
+}
+
+.helper_text {
+  color: gray;
+}
+
+.value {
+  color: darkgreen;
+  font-weight: 800;
+  font-size: 1.8em;
+  margin-top: 15px;
+}
+
+.balance {
+  font-weight: 500;
+}
+.money {
+  font-weight: 600;
+  font-size: 1.2em;
+  margin-left: 5px;
+  color: green;
+}

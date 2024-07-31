@@ -20,7 +20,7 @@ export default function Home() {
   ];
 
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <h1 className={styles.title}>Welcome, mandre.</h1>
 
       <div className={styles.section}>
@@ -119,6 +119,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
