@@ -22,13 +22,13 @@ export default function Dashboard() {
             </Tooltip>
 
             <Tooltip title="Portfolios" placement="right" arrow>
-              <Link href="/portfolios">
+              <Link href="/home#portfolios">
                 <FolderCopyRoundedIcon fontSize="large" />
               </Link>
             </Tooltip>
 
             <Tooltip title="Stock Lists" placement="right" arrow>
-              <Link href="/stocklists">
+              <Link href="/home#stocklists">
                 <SummarizeRoundedIcon fontSize="large" />
               </Link>
             </Tooltip>

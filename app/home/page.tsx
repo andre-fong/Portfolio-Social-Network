@@ -25,7 +25,9 @@ export default function Home() {
 
       <div className={styles.section}>
         <div className={styles.row}>
-          <h2 className={styles.section_title}>Your Portfolios</h2>
+          <h2 className={styles.section_title} id="portfolios">
+            Your Portfolios
+          </h2>
           <Button
             variant="contained"
             href="/new/portfolio"
@@ -54,13 +56,15 @@ export default function Home() {
 
       <div className={styles.section}>
         <div className={styles.row}>
-          <h2 className={styles.section_title}>Your Stock Lists</h2>
+          <h2 className={styles.section_title} id="stocklists">
+            Your Stock Lists
+          </h2>
           <Button
             variant="contained"
             href="/new/stock-list"
             title="New stock list"
           >
-            + New
+            + New List
           </Button>
         </div>
 
@@ -88,7 +92,9 @@ export default function Home() {
       </div>
 
       <div className={styles.section}>
-        <h2 className={styles.section_title}>Stock Lists Shared With You</h2>
+        <h2 className={styles.section_title} id="stocklists_shared">
+          Stock Lists Shared With You
+        </h2>
 
         <div className={styles.stocklist_list}>
           {sharedStockListNames.map((stockList) => (
