@@ -61,7 +61,7 @@ export default function Home() {
           </h2>
           <Button
             variant="contained"
-            href="/new/stock-list"
+            href="/new/stocklist"
             title="New stock list"
           >
             + New List
