@@ -32,6 +32,31 @@ export default function Friends() {
 
       <h2 className={styles.section_title}>Pending</h2>
       <div className={styles.section}>
+        {incoming.map((username) => (
+          <div className={styles.request} key={username}>
+            <div className={styles.user}>
+              <AccountCircleRounded
+                fontSize="large"
+                sx={{ fontSize: "3em", color: "gray" }}
+              />
+              <div className={styles.user_details}>
+                <p className={styles.username}>{username}</p>
+                <p className={styles.request_type} style={{ fontWeight: 600 }}>
+                  Incoming
+                </p>
+              </div>
+            </div>
+            <div className={styles.actions}>
+              <IconButton title="Accept friend request">
+                <CheckRoundedIcon sx={{ color: "green" }} />
+              </IconButton>
+              <IconButton title="Decline friend request">
+                <CloseRoundedIcon sx={{ color: "red" }} />
+              </IconButton>
+            </div>
+          </div>
+        ))}
+
         {outgoing.map((username) => (
           <div className={styles.request} key={username}>
             <div className={styles.user}>
@@ -47,29 +72,6 @@ export default function Friends() {
             <IconButton title="Cancel friend request">
               <CloseRoundedIcon sx={{ color: "red" }} />
             </IconButton>
-          </div>
-        ))}
-
-        {incoming.map((username) => (
-          <div className={styles.request} key={username}>
-            <div className={styles.user}>
-              <AccountCircleRounded
-                fontSize="large"
-                sx={{ fontSize: "3em", color: "gray" }}
-              />
-              <div className={styles.user_details}>
-                <p className={styles.username}>{username}</p>
-                <p className={styles.request_type}>Incoming</p>
-              </div>
-            </div>
-            <div className={styles.actions}>
-              <IconButton title="Accept friend request">
-                <CheckRoundedIcon sx={{ color: "green" }} />
-              </IconButton>
-              <IconButton title="Decline friend request">
-                <CloseRoundedIcon sx={{ color: "red" }} />
-              </IconButton>
-            </div>
           </div>
         ))}
       </div>
