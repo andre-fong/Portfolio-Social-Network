@@ -1,0 +1,36 @@
+.container {
+  padding: 10px 30px;
+  width: 600px;
+}
+
+.symbol {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.price {
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.change {
+  margin-bottom: 25px;
+}
+
+.details {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.details_list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.detail {
+  display: flex;
+  width: 200px;
+  justify-content: space-between;
+}

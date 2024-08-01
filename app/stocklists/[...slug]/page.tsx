@@ -38,8 +38,8 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
       shares: 5,
       price: 300,
       totalValue: 1500,
-      change: 0.5,
-      totalChange: 150,
+      change: -0.5,
+      totalChange: -150,
     },
   ];
   const isOwner = true;

@@ -28,8 +28,8 @@ export default function Portfolio({ params }: { params: { name: string } }) {
       shares: 5,
       price: 300,
       totalValue: 1500,
-      change: 0.5,
-      totalChange: 150,
+      change: -0.5,
+      totalChange: -150,
     },
   ];
   const balance = 314;
