@@ -1,0 +1,46 @@
+.container {
+  flex: 1;
+  padding: 65px 60px 70px 50px;
+  height: 100vh;
+  overflow-y: auto;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.title {
+  font-size: 2.5em;
+  margin-bottom: 30px;
+}
+
+.section_title {
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.title_container {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.owner_row {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  margin-top: -15px;
+  margin-bottom: 30px;
+}
+.owner {
+  font-weight: 500;
+}
