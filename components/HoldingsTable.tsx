@@ -147,8 +147,6 @@ export default function HoldingsTable({
                   component="th"
                   scope="row"
                   sx={{
-                    textDecoration: "underline",
-                    color: "darkblue",
                     fontWeight: "500",
                   }}
                   align="left"

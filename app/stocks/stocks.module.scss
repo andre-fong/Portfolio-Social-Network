@@ -1,0 +1,18 @@
+.container {
+  flex: 1;
+  padding: 65px 60px 70px 50px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 2.5em;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}

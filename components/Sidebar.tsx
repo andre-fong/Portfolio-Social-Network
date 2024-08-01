@@ -6,6 +6,7 @@ import SummarizeRoundedIcon from "@mui/icons-material/SummarizeRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import InsertChartRoundedIcon from "@mui/icons-material/InsertChartRounded";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
 
@@ -30,6 +31,12 @@ export default function Dashboard() {
             <Tooltip title="Stock Lists" placement="right" arrow>
               <Link href="/home#stocklists">
                 <SummarizeRoundedIcon fontSize="large" />
+              </Link>
+            </Tooltip>
+
+            <Tooltip title="Stocks" placement="right" arrow>
+              <Link href="/stocks">
+                <InsertChartRoundedIcon fontSize="large" />
               </Link>
             </Tooltip>
 

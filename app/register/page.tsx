@@ -33,7 +33,12 @@ export default function Register() {
         <h1 className={styles.title}>Register</h1>
 
         <form className={styles.form} onSubmit={handleRegister}>
-          <TextField id="username" label="Username" variant="outlined" />
+          <TextField
+            id="username"
+            label="Username"
+            variant="outlined"
+            autoComplete="off"
+          />
           <TextField
             id="password"
             label="Password"
