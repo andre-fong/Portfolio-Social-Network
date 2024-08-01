@@ -25,9 +25,15 @@
   gap: 30px;
 }
 
+.top_row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .row {
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
   flex-wrap: wrap;
   gap: 10px;

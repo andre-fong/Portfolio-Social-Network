@@ -6,6 +6,7 @@ import HoldingsTable from "@/components/HoldingsTable";
 import StockMatrix from "@/components/StockMatrix";
 import Reviews from "@/components/Reviews";
 import type { StockHoldings } from "@/types/Portfolio";
+import ShareAccess from "@/components/ShareAccess";
 
 export default function StockList({ params }: { params: { slug: string[] } }) {
   const owner = params.slug[0];
@@ -40,17 +41,22 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
       totalChange: 150,
     },
   ];
+  const isOwner = true;
   const isPublic = true;
 
   return (
     <main className={styles.container}>
-      <div className={styles.row}>
-        <div className={styles.title_container}>
-          <h1 className={styles.title}>{listName}</h1>
-          {isPublic && (
-            <PublicRoundedIcon fontSize="large" sx={{ color: "gray" }} />
-          )}
+      <div className={styles.top_row}>
+        <div className={styles.row}>
+          <div className={styles.title_container}>
+            <h1 className={styles.title}>{listName}</h1>
+            {isPublic && (
+              <PublicRoundedIcon fontSize="large" sx={{ color: "gray" }} />
+            )}
+          </div>
         </div>
+
+        {isOwner && <ShareAccess />}
       </div>
 
       <div className={styles.owner_row}>
