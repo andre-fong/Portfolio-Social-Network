@@ -1,8 +1,8 @@
 import styles from "./portfolio.module.scss";
 import StockMatrix from "@/components/StockMatrix";
 import HoldingsTable from "@/components/HoldingsTable";
-import Button from "@mui/material/Button";
 import type { StockHoldings } from "@/types/Portfolio";
+import NewTrade from "@/components/NewTrade";
 
 export default function Portfolio({ params }: { params: { name: string } }) {
   const portfolioValue = 200;
@@ -47,13 +47,8 @@ export default function Portfolio({ params }: { params: { name: string } }) {
 
       <div className={styles.row}>
         <h2 className={styles.section_title}>Holdings</h2>
-        <Button
-          variant="contained"
-          href={`/portfolios/${params.name}/new`}
-          title="Log a new stock trade"
-        >
-          + New Trade
-        </Button>
+
+        <NewTrade />
       </div>
 
       <HoldingsTable holdings={holdings} />

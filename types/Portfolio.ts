@@ -25,3 +25,7 @@ export type StockDaysData = {
   close: number;
   volume: number;
 };
+
+export type LogType = "transaction" | "transfer" | "trade";
+export type TransactionType = "deposit" | "withdraw";
+export type TradeType = "buy" | "sell";
