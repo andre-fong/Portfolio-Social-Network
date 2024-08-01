@@ -1,0 +1,36 @@
+.container {
+  padding: 10px 30px;
+  width: 400px;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.header {
+  font-weight: 500;
+}
+
+.table {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.symbols, .shares {
+  margin-top: 15px;
+
+  p {
+    height: 50px;
+  }
+}
+.symbols {
+  margin-top: 30px;
+}
+
+.input {
+  width: 100px;
+  margin-bottom: 10px;
+}

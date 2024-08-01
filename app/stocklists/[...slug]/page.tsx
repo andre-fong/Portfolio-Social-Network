@@ -5,8 +5,9 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import HoldingsTable from "@/components/HoldingsTable";
 import StockMatrix from "@/components/StockMatrix";
 import Reviews from "@/components/Reviews";
-import type { StockHoldings } from "@/types/Portfolio";
 import ShareAccess from "@/components/ShareAccess";
+import EditListings from "@/components/EditListings";
+import type { StockHoldings } from "@/types/Portfolio";
 
 export default function StockList({ params }: { params: { slug: string[] } }) {
   const owner = params.slug[0];
@@ -15,7 +16,7 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
   if (!owner || !listName) notFound();
 
   const portfolioValue = 200;
-  const holdings: StockHoldings[] = [
+  const listings: StockHoldings[] = [
     {
       symbol: "AAPL",
       shares: 5,
@@ -64,9 +65,15 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
         <p className={styles.owner}>{owner}</p>
       </div>
 
-      <h2 className={styles.section_title}>Listings</h2>
+      <div className={styles.top_row} style={{ marginBottom: "20px" }}>
+        <h2 className={styles.section_title} style={{ marginBottom: 0 }}>
+          Listings
+        </h2>
 
-      <HoldingsTable holdings={holdings} />
+        <EditListings listings={listings} />
+      </div>
+
+      <HoldingsTable holdings={listings} />
 
       <div className={styles.row} />
 
