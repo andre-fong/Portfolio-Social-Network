@@ -6,11 +6,20 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import Link from "next/link";
 
-function handleRegister(e: any) {
+async function handleRegister(e: any) {
   e.preventDefault();
   const username = e.target.username.value;
   const password = e.target.password.value;
-
+  const uid = await fetch("/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ username: username, password: password }),
+  }).catch((err) => {
+    console.log(err);
+    alert(err);
+  });
+  console.log("created account with uid", uid);
   // TODO: Send login request
 }
 

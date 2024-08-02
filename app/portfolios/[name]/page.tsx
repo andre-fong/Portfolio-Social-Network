@@ -3,9 +3,20 @@ import StockMatrix from "@/components/StockMatrix";
 import HoldingsTable from "@/components/HoldingsTable";
 import type { StockHoldings } from "@/types/Portfolio";
 import NewTrade from "@/components/NewTrade";
+import { getPortfolioDetails } from "@/database/portfolio";
 
-export default function Portfolio({ params }: { params: { name: string } }) {
-  const portfolioValue = 200;
+export default async function Portfolio({
+  params,
+}: {
+  params: { name: string };
+}) {
+  const res = await fetch("https://api.github.com/users/andre-fong", {
+    method: "GET",
+    credentials: "include",
+  });
+  const data = await res.json();
+
+  const portfolioValue = 220;
   const holdings: StockHoldings[] = [
     {
       symbol: "AAPL",
@@ -36,14 +47,14 @@ export default function Portfolio({ params }: { params: { name: string } }) {
 
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>{params.name}</h1>
+      <h1 className={styles.title}>{data.login}</h1>
 
       <div className={styles.value_row}>
         <h2 className={styles.section_title}>Current portfolio value</h2>
         <p className={styles.helper_text}>(est. value)</p>
       </div>
 
-      <h2 className={styles.value}>{portfolioValue.toFixed(2)}</h2>
+      <h2 className={styles.value}>{balance.toFixed(2)}</h2>
 
       <div className={styles.row}>
         <h2 className={styles.section_title}>Holdings</h2>
