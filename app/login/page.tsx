@@ -5,11 +5,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import Link from "next/link";
+import bcrypt from "bcryptjs";
 
-function handleLogin(e: any) {
+async function handleLogin(e: any) {
   e.preventDefault();
   const username = e.target.username.value;
   const password = e.target.password.value;
+  const passhash = await bcrypt.hash(password, 12);
 
   // TODO: Send login request
 }

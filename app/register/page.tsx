@@ -5,12 +5,19 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import Link from "next/link";
+import bcrypt from "bcryptjs";
+import { register } from "../../database/queries";
 
-function handleRegister(e: any) {
+async function handleRegister(e: any) {
   e.preventDefault();
   const username = e.target.username.value;
   const password = e.target.password.value;
-
+  const passhash = await bcrypt.hash(password, 12);
+  const uid = await register(username, passhash).catch((err) => {
+    console.log(err);
+    alert(err);
+  });
+  console.log("created account with uid", uid);
   // TODO: Send login request
 }
 
