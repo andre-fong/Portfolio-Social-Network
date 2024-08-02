@@ -6,6 +6,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function NewStockData() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -33,13 +36,12 @@ export default function NewStockData() {
               margin="dense"
               autoComplete="off"
             />
-            <TextField
-              fullWidth
-              label="Date"
-              variant="outlined"
-              margin="dense"
-              autoComplete="off"
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date"
+                sx={{ marginTop: "8px", marginBottom: "4px", width: "100%" }}
+              />
+            </LocalizationProvider>
             <TextField
               fullWidth
               label="Open"

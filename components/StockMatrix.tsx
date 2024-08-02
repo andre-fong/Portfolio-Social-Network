@@ -36,6 +36,9 @@ export default function StockMatrix() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="Start Date" />
         </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker label="End Date" />
+        </LocalizationProvider>
       </div>
     </div>
   );
