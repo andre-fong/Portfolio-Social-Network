@@ -18,13 +18,12 @@ export const register = async (username: string, passhash: string) => {
   return camelize(res.rows[0].uid);
 };
 
-export const login = async (username: string, passhash: string) => {
-  const res = await pool.query(
-    `SELECT uid FROM account WHERE username = $1 AND passhash = $2`,
-    [username, passhash]
-  );
+export const login = async (username: string) => {
+  const res = await pool.query(`SELECT * FROM account WHERE username = $1`, [
+    username,
+  ]);
   if (res.rows.length === 0) {
-    throw new Error("Invalid username or password");
+    return {};
   }
-  return camelize(res.rows[0].uid);
+  return camelize(res.rows[0]);
 };

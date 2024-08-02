@@ -1,6 +1,6 @@
 "use client";
+import { useEffect, useState } from "react";
 import styles from "./friends.module.scss";
-import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -10,9 +10,48 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import DeleteRounded from "@mui/icons-material/DeleteRounded";
 
 export default function Friends() {
-  const outgoing = ["User1"];
-  const incoming = ["User2"];
-  const friends = ["victo", "zobiebuttz", "zanesun"];
+  const [outgoing, setOutgoing] = useState<string[]>([]);
+  const [incoming, setIncoming] = useState<string[]>([]);
+  const [friends, setFriends] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Fetch outgoing and populate state
+    fetch("/api/friends/getPendingFriendsOutgoing", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setOutgoing(data);
+        console.log(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Fetch incoming and populate state
+    fetch("/api/friends/getPendingFriendsIncoming", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setIncoming(data);
+        console.log(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Fetch outgoing and populate state
+    fetch("/api/friends/getActiveFriends", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setFriends(data);
+        console.log(data);
+      });
+  }, []);
 
   return (
     <main className={styles.container}>
@@ -25,7 +64,21 @@ export default function Friends() {
           variant="outlined"
           autoComplete="off"
         />
-        <Button variant="contained" sx={{ height: "56px" }}>
+        <Button
+          variant="contained"
+          sx={{ height: "56px" }}
+          onClick={() => {
+            fetch("/api/friends/sendAcceptFriend", {
+              method: "POST",
+              credentials: "include",
+              body: JSON.stringify({
+                username: (
+                  document.getElementById("username") as HTMLInputElement
+                ).value,
+              }),
+            }).then((res) => location.reload());
+          }}
+        >
           Send
         </Button>
       </div>
@@ -47,10 +100,28 @@ export default function Friends() {
               </div>
             </div>
             <div className={styles.actions}>
-              <IconButton title="Accept friend request">
+              <IconButton
+                title="Accept friend request"
+                onClick={() =>
+                  fetch("/api/friends/sendAcceptFriend", {
+                    method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({ username }),
+                  }).then((res) => location.reload())
+                }
+              >
                 <CheckRoundedIcon sx={{ color: "green" }} />
               </IconButton>
-              <IconButton title="Decline friend request">
+              <IconButton
+                title="Decline friend request"
+                onClick={() =>
+                  fetch("/api/friends/cancelRejectRemoveFriend", {
+                    method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({ username }),
+                  }).then((res) => location.reload())
+                }
+              >
                 <CloseRoundedIcon sx={{ color: "red" }} />
               </IconButton>
             </div>
@@ -69,7 +140,16 @@ export default function Friends() {
                 <p className={styles.request_type}>Outgoing</p>
               </div>
             </div>
-            <IconButton title="Cancel friend request">
+            <IconButton
+              title="Cancel friend request"
+              onClick={() =>
+                fetch("/api/friends/cancelRejectRemoveFriend", {
+                  method: "POST",
+                  credentials: "include",
+                  body: JSON.stringify({ username }),
+                }).then((res) => location.reload())
+              }
+            >
               <CloseRoundedIcon sx={{ color: "red" }} />
             </IconButton>
           </div>
@@ -91,7 +171,16 @@ export default function Friends() {
                 </p>
               </div>
             </div>
-            <IconButton title="Remove friend">
+            <IconButton
+              title="Remove friend"
+              onClick={() =>
+                fetch("/api/friends/cancelRejectRemoveFriend", {
+                  method: "POST",
+                  credentials: "include",
+                  body: JSON.stringify({ username }),
+                }).then((res) => location.reload())
+              }
+            >
               <DeleteRounded sx={{ color: "darkred" }} />
             </IconButton>
           </div>
