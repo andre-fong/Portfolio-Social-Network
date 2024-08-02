@@ -47,16 +47,16 @@ export default function Dashboard() {
             </Tooltip>
           </div>
 
+          {/* TODO: Render current user username on tooltip */}
           <div className={styles.icon_container} style={{ gap: "15px" }}>
             <Tooltip title="Profile" placement="right" arrow>
-              <Link href="/profile">
-                <AccountCircleRoundedIcon
-                  fontSize="large"
-                  sx={{ color: "black" }}
-                />
-              </Link>
+              <AccountCircleRoundedIcon
+                fontSize="large"
+                sx={{ color: "black" }}
+              />
             </Tooltip>
 
+            {/* TODO: logout and return to / */}
             <Tooltip title="Logout" placement="right" arrow>
               <Link href="/logout">
                 <LogoutRoundedIcon fontSize="large" />
