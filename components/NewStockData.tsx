@@ -6,12 +6,15 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
+import CheckBox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function NewStockData() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [newStockChecked, setNewStockChecked] = useState(false);
 
   return (
     <>
@@ -36,6 +39,21 @@ export default function NewStockData() {
               margin="dense"
               autoComplete="off"
             />
+
+            {/* Checkbox that says this is a new stock */}
+            <FormControlLabel
+              control={
+                <CheckBox
+                  checked={newStockChecked}
+                  onChange={(e) => {
+                    setNewStockChecked(e.target.checked);
+                  }}
+                />
+              }
+              label="New Stock"
+              sx={{ marginBottom: "8px" }}
+            />
+
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Date"
