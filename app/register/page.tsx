@@ -5,15 +5,17 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import Link from "next/link";
-import bcrypt from "bcryptjs";
-import { register } from "../../database/queries";
 
 async function handleRegister(e: any) {
   e.preventDefault();
   const username = e.target.username.value;
   const password = e.target.password.value;
-  const passhash = await bcrypt.hash(password, 12);
-  const uid = await register(username, passhash).catch((err) => {
+  const uid = await fetch("/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ username: username, password: password }),
+  }).catch((err) => {
     console.log(err);
     alert(err);
   });
