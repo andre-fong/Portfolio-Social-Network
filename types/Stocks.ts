@@ -7,3 +7,11 @@ export type Stock = {
   close: number;
   volume: number;
 };
+
+export type StockMatrixType = "covariance" | "correlation";
+
+export type StockMatrix = {
+  symbols: string[];
+  covariance: number[][];
+  correlation: number[][];
+};

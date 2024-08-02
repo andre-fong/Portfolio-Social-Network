@@ -6,13 +6,28 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import type { StockMatrixType } from "@/types/Stocks";
 
 export default function StockMatrix() {
-  const [matrixType, setMatrixType] = useState("covariance");
+  const [matrixType, setMatrixType] = useState<StockMatrixType>("covariance");
+
+  const matrix = {
+    symbols: ["AAPL", "GOOGL", "MSFT"],
+    covariance: [
+      [1, 0.5, 0.3],
+      [0.5, 1, 0.7],
+      [0.3, 0.7, 1],
+    ],
+    correlation: [
+      [1, 0.2, 0.7],
+      [0.7, 1, 0.7],
+      [0.2, 0.4, 1],
+    ],
+  };
 
   function handleTypeChange(
     event: React.MouseEvent<HTMLElement>,
-    newMatrixType: string
+    newMatrixType: StockMatrixType | null
   ) {
     setMatrixType((oldType) => (!!newMatrixType ? newMatrixType : oldType));
   }
@@ -40,6 +55,27 @@ export default function StockMatrix() {
           <DatePicker label="End Date" />
         </LocalizationProvider>
       </div>
+
+      <table className={styles.matrix_table} style={{ borderSpacing: "8px" }}>
+        <thead>
+          <tr>
+            <th></th>
+            {matrix.symbols.map((symbol) => (
+              <th key={symbol}>{symbol}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {matrix[matrixType].map((row, i) => (
+            <tr key={i}>
+              <td style={{ fontWeight: "bold" }}>{matrix.symbols[i]}</td>
+              {row.map((value, j) => (
+                <td key={j}>{value.toFixed(2)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
