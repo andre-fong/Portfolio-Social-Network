@@ -56,12 +56,17 @@ export default function StockMatrix() {
         </LocalizationProvider>
       </div>
 
-      <table className={styles.matrix_table} style={{ borderSpacing: "8px" }}>
+      <table
+        className={styles.matrix_table}
+        style={{ borderSpacing: "8px", width: "100%" }}
+      >
         <thead>
           <tr>
             <th></th>
             {matrix.symbols.map((symbol) => (
-              <th key={symbol}>{symbol}</th>
+              <th key={symbol} style={{ textAlign: "left" }}>
+                {symbol}
+              </th>
             ))}
           </tr>
         </thead>
