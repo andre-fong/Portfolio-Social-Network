@@ -94,25 +94,27 @@ export const newPortfolioTrade = async (
   );
 };
 
-// TODO
 export const getPortfolioHoldings = async (uid: string, name: string) => {
   const res = await pool.query(
-    ` SELECT 
+    ` WITH latest_data AS (
+        SELECT 
+        "timestamp",
         ticker_symbol, 
         num_shares,
         close,
         close * num_shares AS value,
-        close - LAG(close, 1) OVER (ORDER BY timestamp) AS unit_change, 
-        (close - LAG(close, 1) OVER (ORDER BY timestamp)) * num_shares AS total_change
+        close - LAG(close, 1) OVER (PARTITION BY ticker_symbol ORDER BY timestamp) AS unit_change, 
+        (close - LAG(close, 1) OVER (PARTITION BY ticker_symbol ORDER BY timestamp)) * num_shares AS total_change
       FROM portfolio_entry
-      JOIN stock_day
-      ON portfolio_entry.ticker_symbol = stock_day.ticker_symbol
+      JOIN stock_day USING (ticker_symbol)
+      WHERE  owner_uid = $1::uuid AND portfolio_name = $2
+      )
+      SELECT * FROM latest_data
       WHERE timestamp IN (
         SELECT MAX(timestamp)
         FROM stock_day sd2
-        WHERE sd2.ticker_symbol = stock_day.ticker_symbol
-      )
-      AND owner_uid = $1::uuid AND portfolio_name = $2`,
+        WHERE sd2.ticker_symbol = latest_data.ticker_symbol
+    ) `,
     [uid, name]
   );
 };
