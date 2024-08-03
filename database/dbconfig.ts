@@ -6,15 +6,3 @@ export const pool = new Pool({
   port: Number(process.env.DB_PORT),
   database: process.env.DB_DATABASE,
 });
-// export const pool = new Pool({
-//   user: "postgres",
-//   password: "postgres",
-//   host: "localhost",
-//   port: 5432,
-//   database: "cscc43_s2024",
-// });
-// DB_USER=postgres
-// DB_PASSWORD=postgres
-// DB_HOST=localhost
-// DB_PORT=5432
-// DB_DATABASE=cscc43_s2024

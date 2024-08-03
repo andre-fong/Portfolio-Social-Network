@@ -1,6 +1,5 @@
 import camelize from "camelize";
 import { pool } from "./dbconfig";
-import type { LogType } from "@/types/Portfolio";
 
 export const newPortfolio = async (
   uid: string,

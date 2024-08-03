@@ -136,9 +136,6 @@ export const sendAcceptFriendRequest = async (
     }
     return `Friend request sent to ${friendUsername}`;
   }
-  console.log("enable at: ", friendRecord.enableAt);
-  console.log(new Date());
-  console.log(friendRecord.enable_at > new Date());
   // friendship record already exists
   if (friendRecord.accepted && friendRecord.friendAccepted) {
     return new Error("Already friends");
