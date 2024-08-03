@@ -94,6 +94,14 @@ export const newPortfolioTrade = async (
     `,
     [uid, name, symbol, amount]
   );
+
+  const res2 = await pool.query(
+    `INSERT INTO portfolio_entry
+    VALUES ($1::uuid, $2, $3, $4)`,
+    [uid, name, symbol, amount]
+  );
+
+  return camelize(res.rows);
 };
 
 export const getPortfolioHoldings = async (uid: string, name: string) => {
