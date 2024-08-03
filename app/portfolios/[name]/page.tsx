@@ -63,7 +63,42 @@ export default async function Portfolio({
   const holdingsData = (await holdingsRes.json()) as StockHoldings[];
 
   const balance = 314;
-  console.log(estimatedData.totalValue);
+
+  const stocksQuery =
+    "?stocks=" + holdingsData.map((stock) => stock.symbol).join("&stocks=");
+
+  const correlationMatrixRes = await fetch(
+    "http://localhost:3000/api/statistics/getCorrelationMatrix" + stocksQuery,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookies().toString(),
+      },
+      credentials: "include",
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
+  const correlationMatrixData = await correlationMatrixRes.json();
+
+  const covarianceMatrixRes = await fetch(
+    "http://localhost:3000/api/statistics/getCovarianceMatrix" + stocksQuery,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookies().toString(),
+      },
+      credentials: "include",
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
+  const covarianceMatrixData = await covarianceMatrixRes.json();
+
   return (
     <main className={styles.container}>
       <h1 className={styles.title}>{data.name}</h1>
@@ -93,7 +128,11 @@ export default async function Portfolio({
         <span className={styles.money}>${data.balance?.toFixed(2)}</span>
       </h3>
 
-      <StockMatrix />
+      <StockMatrix
+        symbols={holdingsData.map((holding) => holding.symbol)}
+        correlationData={correlationMatrixData}
+        covarianceData={covarianceMatrixData}
+      />
     </main>
   );
 }

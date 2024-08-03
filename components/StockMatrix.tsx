@@ -8,22 +8,74 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import type { StockMatrixType } from "@/types/Stocks";
 
-export default function StockMatrix() {
+export default function StockMatrix({
+  symbols,
+  covarianceData,
+  correlationData,
+}: {
+  symbols: string[];
+  covarianceData: {
+    tickerSymbol1: string;
+    tickerSymbol2: string;
+    correlation: number;
+  }[];
+  correlationData: {
+    tickerSymbol1: string;
+    tickerSymbol2: string;
+    covariance: number;
+  }[];
+}) {
   const [matrixType, setMatrixType] = useState<StockMatrixType>("covariance");
 
-  const matrix = {
-    symbols: ["AAPL", "GOOGL", "MSFT"],
-    covariance: [
-      [1, 0.5, 0.3],
-      [0.5, 1, 0.7],
-      [0.3, 0.7, 1],
-    ],
-    correlation: [
-      [1, 0.2, 0.7],
-      [0.7, 1, 0.7],
-      [0.2, 0.4, 1],
-    ],
+  console.log(correlationData);
+  const dataToCorrelationMatrix = (
+    data: {
+      tickerSymbol1: string;
+      tickerSymbol2: string;
+      correlation: number;
+    }[]
+  ) => {
+    const matrix = Array(symbols.length)
+      .fill(0)
+      .map(() => Array(symbols.length).fill(0));
+
+    data.forEach((datum) => {
+      const i = symbols.indexOf(datum.tickerSymbol1);
+      const j = symbols.indexOf(datum.tickerSymbol2);
+      matrix[i][j] = datum.correlation;
+      matrix[j][i] = datum.correlation;
+    });
+
+    return matrix;
   };
+
+  const dataToCovarianceMatrix = (
+    data: {
+      tickerSymbol1: string;
+      tickerSymbol2: string;
+      covariance: number;
+    }[]
+  ) => {
+    const matrix = Array(symbols.length)
+      .fill(0)
+      .map(() => Array(symbols.length).fill(0));
+
+    data.forEach((datum) => {
+      const i = symbols.indexOf(datum.tickerSymbol1);
+      const j = symbols.indexOf(datum.tickerSymbol2);
+      matrix[i][j] = datum.covariance;
+      matrix[j][i] = datum.covariance;
+    });
+
+    return matrix;
+  };
+
+  const matrix = {
+    symbols: symbols,
+    correlation: dataToCorrelationMatrix(correlationData),
+    covariance: dataToCovarianceMatrix(covarianceData),
+  };
+  console.log(matrix);
 
   function handleTypeChange(
     event: React.MouseEvent<HTMLElement>,
