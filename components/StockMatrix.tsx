@@ -99,14 +99,14 @@ export default function StockMatrix({
         </ToggleButtonGroup>
       </div>
 
-      <div className={styles.date_fields}>
+      {/* <div className={styles.date_fields}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="Start Date" />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="End Date" />
         </LocalizationProvider>
-      </div>
+      </div> */}
 
       <table
         className={styles.matrix_table}
