@@ -79,8 +79,6 @@ export default async function StockList({
       totalChange: -150,
     },
   ];
-  // const isOwner = true;
-  const isPublic = true;
 
   return (
     <main className={styles.container}>
@@ -97,7 +95,11 @@ export default async function StockList({
         <div className={styles.actions}>
           {isOwner && (
             <>
-              <ShareAccess />
+              <ShareAccess
+                isPublic={data.isPublic}
+                owner={owner}
+                listName={listName}
+              />
               <DeleteStockList owner={owner} listName={listName} />
             </>
           )}

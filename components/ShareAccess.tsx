@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles/ShareAccess.module.scss";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -13,13 +13,82 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-export default function ShareAccess() {
+export default function ShareAccess({
+  owner,
+  listName,
+  isPublic,
+}: {
+  owner: string;
+  listName: string;
+  isPublic: boolean;
+}) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  // TODO: set to true if stock list is public
-  const [publicChecked, setPublicChecked] = useState(false);
+  const [publicChecked, setPublicChecked] = useState(isPublic);
+  const [sharedWith, setSharedWith] = useState<{ username: string }[]>([]);
 
-  const isOwner = true;
-  const sharedWith = ["zanesun", "victo", "zobiebuttz"];
+  useEffect(() => {
+    fetch(`/api/shared-with?owner=${owner}&name=${listName}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setSharedWith(data);
+        });
+      }
+    });
+  }, []);
+
+  function togglePublicity() {
+    fetch(`/api/shared-with`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        isPublic: !isPublic,
+        owner,
+        name: listName,
+      }),
+    }).then(() => {
+      location.reload();
+    });
+  }
+
+  function addSharedWith() {
+    const newShare = document.getElementById("new-share") as HTMLInputElement;
+    fetch(`/api/shared-with`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        owner,
+        name: listName,
+        shareUsername: newShare.value,
+      }),
+    }).then(() => {
+      location.reload();
+    });
+  }
+
+  function removeSharedWith(username: string) {
+    fetch(`/api/shared-with`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        owner,
+        name: listName,
+        shareUsername: username,
+      }),
+    }).then(() => {
+      location.reload();
+    });
+  }
 
   return (
     <>
@@ -42,17 +111,23 @@ export default function ShareAccess() {
               variant="outlined"
               placeholder="Enter a username"
               fullWidth
+              id="new-share"
             />
 
             <div className={styles.full_row}>
-              <Button variant="contained">Share</Button>
+              <Button variant="contained" onClick={addSharedWith}>
+                Share
+              </Button>
             </div>
 
             <FormControlLabel
               control={
                 <CheckBox
                   checked={publicChecked}
-                  onChange={() => setPublicChecked((oldChecked) => !oldChecked)}
+                  onChange={() => {
+                    setPublicChecked((oldChecked) => !oldChecked);
+                    togglePublicity();
+                  }}
                 />
               }
               label="Make Public"
@@ -60,14 +135,20 @@ export default function ShareAccess() {
 
             <h3 className={styles.shared_with}>Shared With</h3>
 
-            {sharedWith.map((username) => (
-              <div className={styles.shared_with_user} key={username}>
+            {sharedWith.map((sharedWith) => (
+              <div
+                className={styles.shared_with_user}
+                key={sharedWith.username}
+              >
                 <div className={styles.user_info}>
                   <AccountCircleRoundedIcon />
-                  <p>{username}</p>
+                  <p>{sharedWith.username}</p>
                 </div>
 
-                <IconButton title={`Remove access from ${username}`}>
+                <IconButton
+                  title={`Remove access from ${sharedWith.username}`}
+                  onClick={() => removeSharedWith(sharedWith.username)}
+                >
                   <CloseRoundedIcon />
                 </IconButton>
               </div>

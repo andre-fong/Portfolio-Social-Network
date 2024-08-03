@@ -157,3 +157,79 @@ export const editStockListShares = async (
 
   return camelize(res.rows);
 };
+
+// TODO: make more safe
+export const getStockListSharedWith = async (owner: string, name: string) => {
+  const res = await pool.query(
+    `
+    SELECT username
+    FROM stock_list_share
+    JOIN account ON shared_with_uid = uid
+    WHERE owner_uid IN (SELECT uid FROM account WHERE username = $1)
+    AND stock_list_name = $2
+    `,
+    [owner, name]
+  );
+
+  return camelize(res.rows);
+};
+
+export const editStockListPublicity = async (
+  uid: string,
+  ownerUsername: string,
+  name: string,
+  isPublic: boolean
+) => {
+  const res = await pool.query(
+    `UPDATE stock_list
+    SET is_public = $4
+    WHERE owner_uid = (SELECT uid FROM account WHERE username = $2)
+    AND name = $3
+    AND owner_uid = $1::uuid`,
+    [uid, ownerUsername, name, isPublic]
+  );
+
+  return camelize(res.rows);
+};
+
+export const addStockListSharedWith = async (
+  uid: string,
+  ownerUsername: string,
+  name: string,
+  shareUsername: string
+) => {
+  const res = await pool.query(
+    `INSERT INTO stock_list_share VALUES (
+      (
+      SELECT uid
+      FROM account
+      WHERE username = $2
+      AND uid = $1::uuid
+      ), $3,
+      (SELECT uid
+      FROM account
+      WHERE username = $4)
+    )`,
+    [uid, ownerUsername, name, shareUsername]
+  );
+
+  return camelize(res.rows);
+};
+
+export const removeStockListSharedWith = async (
+  uid: string,
+  ownerUsername: string,
+  name: string,
+  shareUsername: string
+) => {
+  const res = await pool.query(
+    `DELETE FROM stock_list_share
+    WHERE owner_uid IN (SELECT uid FROM account WHERE username = $2)
+    AND owner_uid = $1::uuid
+    AND stock_list_name = $3
+    AND shared_with_uid = (SELECT uid FROM account WHERE username = $4)`,
+    [uid, ownerUsername, name, shareUsername]
+  );
+
+  return camelize(res.rows);
+};
