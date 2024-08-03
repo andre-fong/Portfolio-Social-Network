@@ -54,16 +54,16 @@ export const newPortfolioTransfer = async (
   amount: number
 ) => {
   const res = await pool.query(
-    `UPDATE portfolio
-    SET balance = balance - $3
-    WHERE owner_uid = $1::uuid AND name = $2`,
-    [uid, nameFrom, amount]
-  );
-  const res2 = await pool.query(
-    `UPDATE portfolio
-    SET balance = balance + $3
-    WHERE owner_uid = $1::uuid AND name = $2`,
-    [uid, nameTo, amount]
+    `
+    BEGIN;
+    UPDATE portfolio
+    SET balance = balance - $4
+    WHERE owner_uid = $1::uuid AND name = $2
+    UPDATE portfolio
+    SET balance = balance + $4
+    WHERE owner_uid = $1::uuid AND name = $3
+    COMMIT;`,
+    [uid, nameFrom, nameTo, amount]
   );
 
   return camelize(res.rows);
@@ -77,6 +77,7 @@ export const newPortfolioTrade = async (
 ) => {
   const res = await pool.query(
     `
+    BEGIN;
     UPDATE portfolio
     SET balance = balance - (
       SELECT close * $4
@@ -91,17 +92,12 @@ export const newPortfolioTrade = async (
       AND stock_day.ticker_symbol = $3
       LIMIT 1
     )
-    WHERE owner_uid = $1::uuid AND name = $2
-    `,
-    [uid, name, symbol, amount]
-  );
-
-  const res2 = await pool.query(
-    `
+    WHERE owner_uid = $1::uuid AND name = $2;
     INSERT INTO portfolio_entry (owner_uid, portfolio_name, ticker_symbol, num_shares)
     VALUES ($1::uuid, $2, $3, $4)
     ON CONFLICT (owner_uid, portfolio_name, ticker_symbol) DO UPDATE
-    SET num_shares = portfolio_entry.num_shares + $4
+    SET num_shares = portfolio_entry.num_shares + $4;
+    COMMIT;
     `,
     [uid, name, symbol, amount]
   );
