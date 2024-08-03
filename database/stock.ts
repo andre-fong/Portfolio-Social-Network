@@ -1,9 +1,40 @@
 import camelize from "camelize";
 import { pool } from "./dbconfig";
 
-export const getStockData = async (tickerSymbol: string, numDays: number) => {
+export const getStockDetails = async (tickerSymbol: string) => {
   const res = await pool.query(
-    ` SELECT * FROM stock_day 
+    `WITH latest_close_difference AS (
+      SELECT 
+        ticker_symbol, 
+        timestamp, 
+        close - LAG(close, 1) OVER (ORDER BY timestamp) AS close_difference
+      FROM stock_day
+      WHERE ticker_symbol = $1
+      ORDER BY timestamp DESC
+      LIMIT 1
+    )
+    SELECT 
+      stock_day.ticker_symbol, 
+      stock_day.close, 
+      latest_close_difference.close_difference,
+      latest_close_difference.close_difference / 
+        (stock_day.close - latest_close_difference.close_difference)
+      AS close_difference_percent
+    FROM stock_day
+    JOIN latest_close_difference
+    ON stock_day.ticker_symbol = latest_close_difference.ticker_symbol
+    AND stock_day.timestamp = latest_close_difference.timestamp`,
+    [tickerSymbol]
+  );
+  return camelize(res.rows[0]);
+};
+
+export const getStockHistory = async (
+  tickerSymbol: string,
+  numDays: number
+) => {
+  const res = await pool.query(
+    ` SELECT ticker_symbol, close FROM stock_day 
       WHERE ticker_symbol = $1
       ORDER BY timestamp DESC
       LIMIT $2`,
@@ -16,7 +47,7 @@ export const getAllStocksRecentData = async () => {
   const res = await pool.query(
     ` SELECT stock_day.*
       FROM public.stock_day
-      INNER JOIN (
+      JOIN (
         SELECT ticker_symbol, MAX(timestamp) AS latest_timestamp
         FROM public.stock_day
         GROUP BY ticker_symbol
