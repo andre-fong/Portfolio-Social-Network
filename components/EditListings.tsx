@@ -31,6 +31,15 @@ export default function EditListings({
       updatedListings.push({ symbol, shares });
     });
 
+    const newSymbol = (document.getElementById("new") as HTMLInputElement)
+      .value;
+    const newShares = parseInt(
+      (document.getElementById("new_shares") as HTMLInputElement).value
+    );
+    if (newSymbol && newShares) {
+      updatedListings.push({ symbol: newSymbol, shares: newShares });
+    }
+
     console.log(updatedListings);
 
     fetch(`/api/stocklists/${owner}/${listName}`, {
@@ -80,6 +89,20 @@ export default function EditListings({
                 ))}
               </div>
             </div>
+            <TextField
+              label="Add Symbol"
+              variant="outlined"
+              size="small"
+              id="new"
+              sx={{ marginBottom: "10px" }}
+            />
+
+            <TextField
+              label="Shares"
+              variant="outlined"
+              size="small"
+              id="new_shares"
+            />
 
             <div>
               <Button
