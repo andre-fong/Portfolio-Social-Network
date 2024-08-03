@@ -100,3 +100,31 @@ export const editStockListReview = async (
 
   return camelize(res.rows);
 };
+
+export const deleteStockListReview = async (
+  uid: string,
+  ownerUsername: string,
+  name: string,
+  reviewerUsername: string
+) => {
+  const res = await pool.query(
+    `
+    DELETE FROM stock_list_review
+    WHERE owner_uid IN (
+      SELECT uid
+      FROM account
+      WHERE username = $1
+    ) 
+    AND stock_list_name = $2 
+    AND (reviewer_uid IN (
+      SELECT uid
+      FROM account
+      WHERE username = $3
+      AND uid = $4::uuid
+    ) OR owner_uid = $4::uuid)
+  `,
+    [ownerUsername, name, reviewerUsername, uid]
+  );
+
+  return camelize(res.rows);
+};

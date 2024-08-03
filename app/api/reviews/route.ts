@@ -2,6 +2,7 @@ import {
   getStockListReviews,
   newStockListReview,
   editStockListReview,
+  deleteStockListReview,
 } from "@/database/stocklist";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -53,16 +54,19 @@ export async function PATCH(request: NextRequest) {
   return Response.json(res, { status: 200 });
 }
 
-// export async function DELETE(request: NextRequest) {
-//   const { ownerUsername, listName, reviewerUsername } = await request.json();
+export async function DELETE(request: NextRequest) {
+  const { ownerUsername, listName, reviewerUsername } = await request.json();
 
-//   const uid = cookies().get("uid")?.value;
-//   if (!uid) {
-//     return Response.json({ error: "Not logged in" }, { status: 401 });
-//   }
+  const uid = cookies().get("uid")?.value;
+  if (!uid) {
+    return Response.json({ error: "Not logged in" }, { status: 401 });
+  }
 
-//   `
-//   DELETE FROM stock_list_review
-//   WHERE
-//   `
-// }
+  const res = await deleteStockListReview(
+    uid,
+    ownerUsername,
+    listName,
+    reviewerUsername
+  );
+  return Response.json(res, { status: 200 });
+}
