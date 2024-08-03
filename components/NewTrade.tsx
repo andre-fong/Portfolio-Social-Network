@@ -13,7 +13,7 @@ import Radio from "@mui/material/Radio";
 import TextField from "@mui/material/TextField";
 import type { LogType, TransactionType, TradeType } from "@/types/Portfolio";
 
-export default function NewTrade() {
+export default function NewTrade({ name }: { name: string }) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [type, setType] = useState<LogType>("trade");
@@ -34,6 +34,39 @@ export default function NewTrade() {
   function handleTradeTypeChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newType = event.target.value as TradeType;
     setTradeType(newType);
+  }
+
+  function handleSubmit() {
+    if (type === "transaction") {
+      fetch(`/api/portfolios/${name}/transaction`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          credentials: "include",
+        },
+        body: JSON.stringify({
+          amount:
+            parseInt(
+              (document.getElementById("amount") as HTMLInputElement).value
+            ) * (transactionType === "withdraw" ? -1 : 1),
+        }),
+      });
+    } else if (type === "transfer") {
+      fetch(`/api/portfolios/${name}/transfer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          credentials: "include",
+        },
+        body: JSON.stringify({
+          from: (document.getElementById("from") as HTMLInputElement).value,
+          to: (document.getElementById("to") as HTMLInputElement).value,
+          amount: parseInt(
+            (document.getElementById("amount") as HTMLInputElement).value
+          ),
+        }),
+      });
+    }
   }
 
   return (
@@ -111,7 +144,9 @@ export default function NewTrade() {
 
                 {tradeType !== null && (
                   <>
-                    <Button variant="contained">Submit</Button>
+                    <Button variant="contained" onClick={handleSubmit}>
+                      Submit
+                    </Button>
                     <p className={styles.footnote}>
                       <span className={styles.note}>Note</span>: This will
                       update your portfolio account balance accordingly.
@@ -143,12 +178,18 @@ export default function NewTrade() {
                 </FormControl>
 
                 <div style={{ marginBottom: "30px", marginTop: "20px" }}>
-                  <TextField label="Amount ($)" variant="outlined" />
+                  <TextField
+                    label="Amount ($)"
+                    variant="outlined"
+                    id="amount"
+                  />
                 </div>
 
                 {transactionType !== null && (
                   <>
-                    <Button variant="contained">Submit</Button>
+                    <Button variant="contained" onClick={handleSubmit}>
+                      Submit
+                    </Button>
                     <p className={styles.footnote}>
                       <span className={styles.note}>Note</span>: This will
                       update your portfolio account balance accordingly.
@@ -161,20 +202,23 @@ export default function NewTrade() {
             {type === "transfer" && (
               <>
                 <div style={{ marginBottom: "20px", marginTop: "20px" }}>
-                  <TextField label="From" variant="outlined" />
+                  <TextField label="From" variant="outlined" id="from" />
                 </div>
                 <div style={{ marginBottom: "30px", marginTop: "20px" }}>
-                  <TextField label="To" variant="outlined" />
+                  <TextField label="To" variant="outlined" id="to" />
                 </div>
                 <div style={{ marginBottom: "30px", marginTop: "20px" }}>
                   <TextField
                     label="Amount ($)"
                     variant="outlined"
                     autoComplete="off"
+                    id="amount"
                   />
                 </div>
 
-                <Button variant="contained">Submit</Button>
+                <Button variant="contained" onClick={handleSubmit}>
+                  Submit
+                </Button>
                 <p className={styles.footnote}>
                   <span className={styles.note}>Note</span>: This will update
                   your portfolio accounts&apos; balances accordingly.

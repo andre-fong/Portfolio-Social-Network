@@ -1,6 +1,6 @@
 export type Stock = {
-  symbol: string;
-  recentDate: Date;
+  tickerSymbol: string;
+  timestamp: Date;
   open: number;
   high: number;
   low: number;

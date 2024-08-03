@@ -80,7 +80,7 @@ export default async function Portfolio({
       <div className={styles.row}>
         <h2 className={styles.section_title}>Holdings</h2>
 
-        <NewTrade />
+        <NewTrade name={params.name} />
       </div>
 
       <HoldingsTable holdings={holdingsData} />

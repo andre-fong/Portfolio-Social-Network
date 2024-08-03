@@ -6,58 +6,21 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import Dialog from "@mui/material/Dialog";
 import NewStockData from "@/components/NewStockData";
 import type { Stock } from "@/types/Stocks";
 
-export default function Stocks() {
-  const stocks: Stock[] = [
+export default async function Stocks() {
+  const stockRes = await fetch(
+    "http://localhost:3000/api/stock/getAllStocksRecentData",
     {
-      symbol: "AAPL",
-      recentDate: new Date("2021-10-01"),
-      open: 34.25,
-      high: 34.25,
-      low: 34.25,
-      close: 34.25,
-      volume: 1000,
-    },
-    {
-      symbol: "TSLA",
-      recentDate: new Date("2021-10-01"),
-      open: 34.25,
-      high: 34.25,
-      low: 34.25,
-      close: 34.25,
-      volume: 1000,
-    },
-    {
-      symbol: "AMZN",
-      recentDate: new Date("2021-10-01"),
-      open: 34.25,
-      high: 34.25,
-      low: 34.25,
-      close: 34.25,
-      volume: 1000,
-    },
-    {
-      symbol: "GOOGL",
-      recentDate: new Date("2021-10-01"),
-      open: 34.25,
-      high: 34.25,
-      low: 34.25,
-      close: 34.25,
-      volume: 1000,
-    },
-    {
-      symbol: "MSFT",
-      recentDate: new Date("2021-10-01"),
-      open: 34.25,
-      high: 34.25,
-      low: 34.25,
-      close: 34.25,
-      volume: 1000,
-    },
-  ];
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
+  const stockData: Stock[] = await stockRes.json();
 
   return (
     <main className={styles.container}>
@@ -94,8 +57,8 @@ export default function Stocks() {
           </TableHead>
 
           <TableBody>
-            {stocks.map((stock) => (
-              <TableRow key={stock.symbol}>
+            {stockData.map((stock) => (
+              <TableRow key={stock.tickerSymbol}>
                 <TableCell
                   component="th"
                   scope="row"
@@ -105,11 +68,11 @@ export default function Stocks() {
                   }}
                   align="left"
                 >
-                  {stock.symbol}
+                  {stock.tickerSymbol}
                 </TableCell>
                 <TableCell align="right">
                   {/* format to date string mm/dd/yyyy */}
-                  {stock.recentDate.toLocaleDateString("en-US")}
+                  {new Date(stock.timestamp).toLocaleDateString("en-US")}
                 </TableCell>
                 <TableCell align="right">{stock.open.toFixed(2)}</TableCell>
                 <TableCell align="right">{stock.high.toFixed(2)}</TableCell>

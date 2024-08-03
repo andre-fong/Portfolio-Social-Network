@@ -55,12 +55,15 @@ export const newPortfolioTransfer = async (
 ) => {
   const res = await pool.query(
     `UPDATE portfolio
-    SET balance = balance - $4
-    WHERE owner_uid = $1::uuid AND name = $2;
-    UPDATE portfolio
-    SET balance = balance + $4
-    WHERE owner_uid = $1::uuid AND name = $3`,
-    [uid, nameFrom, nameTo, amount]
+    SET balance = balance - $3
+    WHERE owner_uid = $1::uuid AND name = $2`,
+    [uid, nameFrom, amount]
+  );
+  const res2 = await pool.query(
+    `UPDATE portfolio
+    SET balance = balance + $3
+    WHERE owner_uid = $1::uuid AND name = $2`,
+    [uid, nameTo, amount]
   );
 
   return camelize(res.rows);
