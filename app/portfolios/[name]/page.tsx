@@ -44,35 +44,26 @@ export default async function Portfolio({
   );
   const estimatedData = (await estimatedRes.json())[0];
 
-  const portfolioValue = 220;
-  const holdings: StockHoldings[] = [
+  const holdingsRes = await fetch(
+    "http://localhost:3000/api/portfolios/" +
+      params.name +
+      "/getPortfolioHoldings",
     {
-      symbol: "AAPL",
-      shares: 5,
-      price: 100,
-      totalValue: 500,
-      change: 0.5,
-      totalChange: 50,
-    },
-    {
-      symbol: "TSLA",
-      shares: 5,
-      price: 200,
-      totalValue: 1000,
-      change: 0.5,
-      totalChange: 100,
-    },
-    {
-      symbol: "AMZN",
-      shares: 5,
-      price: 300,
-      totalValue: 1500,
-      change: -0.5,
-      totalChange: -150,
-    },
-  ];
-  const balance = 314;
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookies().toString(),
+      },
+      credentials: "include",
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
+  const holdingsData = (await holdingsRes.json()) as StockHoldings[];
 
+  const balance = 314;
+  console.log(estimatedData.totalValue);
   return (
     <main className={styles.container}>
       <h1 className={styles.title}>{data.name}</h1>
@@ -92,7 +83,7 @@ export default async function Portfolio({
         <NewTrade />
       </div>
 
-      <HoldingsTable holdings={holdings} />
+      <HoldingsTable holdings={holdingsData} />
 
       <div className={styles.row}>
         <h2 className={styles.section_title}>Cash Account</h2>

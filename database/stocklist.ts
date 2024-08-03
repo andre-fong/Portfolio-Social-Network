@@ -107,22 +107,22 @@ export const getStockListHoldings = async (uid: string, name: string) => {
     ` WITH latest_data AS (
         SELECT 
         "timestamp",
-        ticker_symbol, 
-        num_shares,
-        close,
-        close * num_shares AS value,
-        close - LAG(close, 1) OVER (PARTITION BY ticker_symbol ORDER BY timestamp) AS unit_change, 
+        ticker_symbol AS symbol, 
+        num_shares AS shares,
+        close AS price,
+        close * num_shares AS total_value,
+        close - LAG(close, 1) OVER (PARTITION BY ticker_symbol ORDER BY timestamp) AS change, 
         (close - LAG(close, 1) OVER (PARTITION BY ticker_symbol ORDER BY timestamp)) * num_shares AS total_change
       FROM stock_list_entry
       JOIN stock_day USING (ticker_symbol)
-      WHERE owner_uid = $1::uuid AND stock_list_name = $2
+      WHERE  owner_uid = $1::uuid AND stock_list_name = $2
       )
       SELECT * FROM latest_data
       WHERE timestamp IN (
         SELECT MAX(timestamp)
         FROM stock_day sd2
-        WHERE sd2.ticker_symbol = latest_data.ticker_symbol
-    ) `,
+        WHERE sd2.ticker_symbol = latest_data.symbol
+    )  `,
     [uid, name]
   );
 };
