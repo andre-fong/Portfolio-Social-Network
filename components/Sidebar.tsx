@@ -9,8 +9,22 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import InsertChartRoundedIcon from "@mui/icons-material/InsertChartRounded";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const youRes = await fetch("http://localhost:3000/api/you", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookies().toString(),
+    },
+    credentials: "include",
+    next: {
+      revalidate: 0,
+    },
+  });
+  const youData = await youRes.json();
+
   return (
     <div className={styles.content}>
       <Paper elevation={5} sx={{ padding: "35px 20px", borderRadius: "20px" }}>
@@ -47,9 +61,8 @@ export default function Dashboard() {
             </Tooltip>
           </div>
 
-          {/* TODO: Render current user username on tooltip */}
           <div className={styles.icon_container} style={{ gap: "15px" }}>
-            <Tooltip title="Profile" placement="right" arrow>
+            <Tooltip title={youData.username} placement="right" arrow>
               <AccountCircleRoundedIcon
                 fontSize="large"
                 sx={{ color: "black" }}

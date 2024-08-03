@@ -116,7 +116,7 @@ export default async function StockList({
           Listings
         </h2>
 
-        <EditListings listings={listings} />
+        {isOwner && <EditListings listings={listings} />}
       </div>
 
       <HoldingsTable holdings={listings} />
