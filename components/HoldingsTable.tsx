@@ -24,6 +24,14 @@ import type {
   StockDaysData,
 } from "@/types/Portfolio";
 
+const days = {
+  "1W": 7,
+  "1M": 30,
+  "3M": 90,
+  "1Y": 365,
+  "5Y": 1825,
+};
+
 export default function HoldingsTable({
   holdings,
 }: {
@@ -34,18 +42,16 @@ export default function HoldingsTable({
   const [timeframe, setTimeframe] = useState<DateRange>("1W");
   const [futureChecked, setFutureChecked] = useState(false);
   const [stockHistory, setStockHistory] = useState<StockDaysData[]>([]);
-  stockHistory.forEach((day) => {
-    console.log(day.date);
-    console.log(day.close);
+  const [stockDetails, setStockDetails] = useState<StockDetails>({
+    tickerSymbol: "",
+    close: 0,
+    closeDifference: 0,
+    closeDifferencePercent: 0,
+    open: 0,
+    high: 0,
+    low: 0,
+    volume: 0,
   });
-
-  const days = {
-    "1W": 7,
-    "1M": 30,
-    "3M": 90,
-    "1Y": 365,
-    "5Y": 1825,
-  };
 
   // Reset timeframe once stock details modal is closed
   useEffect(() => {
@@ -56,6 +62,11 @@ export default function HoldingsTable({
 
   useEffect(() => {
     if (!!openStock) {
+      fetch(`/api/stock/getStockDetails?stock=${openStock}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setStockDetails(data);
+        });
       fetch(
         `/api/stock/getStockHistory?stock=${openStock}&numDays=${days[timeframe]}`
       )
@@ -77,68 +88,6 @@ export default function HoldingsTable({
   ) {
     setTimeframe((oldVal) => (!!value ? value : oldVal));
   }
-
-  const stockDetails: StockDetails = {
-    symbol: "AAPL",
-    price: 34.25,
-    change: 0.32,
-    changePercent: 0.94,
-    open: 34.25,
-    high: 35.8,
-    low: 32.79,
-    volume: 1000,
-  };
-
-  // const stockHistory: StockDaysData[] = [
-  //   {
-  //     date: new Date("2021-10-01"),
-  //     close: 34.25,
-  //   },
-  //   {
-  //     date: new Date("2021-10-02"),
-  //     close: 35.8,
-  //   },
-  //   {
-  //     date: new Date("2021-10-03"),
-  //     close: 32.79,
-  //   },
-  //   {
-  //     date: new Date("2021-10-04"),
-  //     close: 33.25,
-  //   },
-  //   {
-  //     date: new Date("2021-10-05"),
-  //     close: 34.25,
-  //   },
-  //   {
-  //     date: new Date("2021-10-06"),
-  //     close: 35.8,
-  //   },
-  //   {
-  //     date: new Date("2021-10-07"),
-  //     close: 32.79,
-  //   },
-  //   {
-  //     date: new Date("2021-10-08"),
-  //     close: 33.25,
-  //   },
-  //   {
-  //     date: new Date("2021-10-09"),
-  //     close: 34.25,
-  //   },
-  //   {
-  //     date: new Date("2021-10-10"),
-  //     close: 35.8,
-  //   },
-  //   {
-  //     date: new Date("2021-10-11"),
-  //     close: 32.79,
-  //   },
-  //   {
-  //     date: new Date("2021-10-12"),
-  //     close: 33.25,
-  //   },
-  // ];
 
   return (
     <>
@@ -232,19 +181,21 @@ export default function HoldingsTable({
             <h2 className={styles.symbol}>{openStock}</h2>
             <h3
               className={styles.price}
-              style={{ color: stockDetails.change >= 0 ? "green" : "red" }}
+              style={{
+                color: stockDetails.closeDifference >= 0 ? "green" : "red",
+              }}
             >
-              {stockDetails.price.toFixed(2)}
+              {stockDetails.close.toFixed(2)}
             </h3>
             <p
               className={styles.change}
               style={{
-                color: stockDetails.change >= 0 ? "darkgreen" : "darkred",
+                color:
+                  stockDetails.closeDifference >= 0 ? "darkgreen" : "darkred",
               }}
             >
-              {stockDetails.change >= 0 ? "+" : "-"}
-              {stockDetails.change.toFixed(2)} (
-              {stockDetails.changePercent.toFixed(2)}%)
+              {stockDetails.closeDifference.toFixed(2)} (
+              {stockDetails.closeDifferencePercent.toFixed(2)}%)
             </p>
 
             <ToggleButtonGroup
@@ -256,17 +207,16 @@ export default function HoldingsTable({
               <ToggleButton value="1W">1W</ToggleButton>
               <ToggleButton value="1M">1M</ToggleButton>
               <ToggleButton value="3M">3M</ToggleButton>
-              <ToggleButton value="6M">1Y</ToggleButton>
-              <ToggleButton value="1Y">5Y</ToggleButton>
+              <ToggleButton value="1Y">1Y</ToggleButton>
+              <ToggleButton value="5Y">5Y</ToggleButton>
             </ToggleButtonGroup>
 
             <LineChart
               xAxis={[
                 {
                   scaleType: "time",
-                  data: stockHistory.map((day) => day.date),
-                  valueFormatter: (value) =>
-                    new Date(value).toLocaleDateString("en-US"),
+                  data: stockHistory.map((day) => new Date(day.date)),
+                  valueFormatter: (value) => value.toLocaleDateString("en-US"),
                   label: "Date",
                 },
               ]}
@@ -276,7 +226,8 @@ export default function HoldingsTable({
                   curve: "linear",
                   data: stockHistory.map((day) => day.close),
                   valueFormatter: (value) => `$${value?.toFixed(2)}`,
-                  color: "green",
+                  color: stockDetails.closeDifference >= 0 ? "green" : "red",
+                  connectNulls: true,
                 },
               ]}
               width={500}
@@ -310,7 +261,7 @@ export default function HoldingsTable({
                 </div>
                 <div className={styles.detail}>
                   <p style={{ fontWeight: 500 }}>Close</p>
-                  <p>{stockDetails.price.toFixed(2)}</p>
+                  <p>{stockDetails.close.toFixed(2)}</p>
                 </div>
                 <div className={styles.detail}>
                   <p style={{ fontWeight: 500 }}>Volume</p>
