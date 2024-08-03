@@ -7,6 +7,7 @@ import StockMatrix from "@/components/StockMatrix";
 import Reviews from "@/components/Reviews";
 import ShareAccess from "@/components/ShareAccess";
 import EditListings from "@/components/EditListings";
+import DeleteStockList from "@/components/DeleteStockList";
 import type { StockHoldings } from "@/types/Portfolio";
 
 export default function StockList({ params }: { params: { slug: string[] } }) {
@@ -57,7 +58,10 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
           </div>
         </div>
 
-        {isOwner && <ShareAccess />}
+        <div className={styles.actions}>
+          {isOwner && <ShareAccess />}
+          <DeleteStockList owner={owner} listName={listName} />
+        </div>
       </div>
 
       <div className={styles.owner_row}>
