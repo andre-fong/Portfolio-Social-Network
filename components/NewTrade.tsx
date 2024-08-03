@@ -66,6 +66,21 @@ export default function NewTrade({ name }: { name: string }) {
           ),
         }),
       });
+    } else if (type === "trade") {
+      fetch(`/api/portfolios/${name}/trade`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          credentials: "include",
+        },
+        body: JSON.stringify({
+          symbol: (document.getElementById("symbol") as HTMLInputElement).value,
+          amount:
+            parseInt(
+              (document.getElementById("amount") as HTMLInputElement).value
+            ) * (tradeType === "sell" ? -1 : 1),
+        }),
+      });
     }
   }
 
@@ -116,7 +131,7 @@ export default function NewTrade({ name }: { name: string }) {
             {type === "trade" && (
               <>
                 <div style={{ marginBottom: "20px" }}>
-                  <TextField label="Symbol" variant="outlined" />
+                  <TextField label="Symbol" variant="outlined" id="symbol" />
                 </div>
 
                 <FormControl>
@@ -139,7 +154,7 @@ export default function NewTrade({ name }: { name: string }) {
                 </FormControl>
 
                 <div style={{ marginBottom: "30px", marginTop: "20px" }}>
-                  <TextField label="Shares" variant="outlined" />
+                  <TextField label="Shares" variant="outlined" id="amount" />
                 </div>
 
                 {tradeType !== null && (

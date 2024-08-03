@@ -33,6 +33,19 @@ export default function HoldingsTable({
   const [openStock, setOpenStock] = useState<string | null>(null);
   const [timeframe, setTimeframe] = useState<DateRange>("1W");
   const [futureChecked, setFutureChecked] = useState(false);
+  const [stockHistory, setStockHistory] = useState<StockDaysData[]>([]);
+  stockHistory.forEach((day) => {
+    console.log(day.date);
+    console.log(day.close);
+  });
+
+  const days = {
+    "1W": 7,
+    "1M": 30,
+    "3M": 90,
+    "1Y": 365,
+    "5Y": 1825,
+  };
 
   // Reset timeframe once stock details modal is closed
   useEffect(() => {
@@ -40,6 +53,18 @@ export default function HoldingsTable({
       setTimeframe("1W");
     }
   }, [modalOpen]);
+
+  useEffect(() => {
+    if (!!openStock) {
+      fetch(
+        `/api/stock/getStockHistory?stock=${openStock}&numDays=${days[timeframe]}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setStockHistory(data);
+        });
+    }
+  }, [openStock, timeframe]);
 
   function handleOpenStockDetails(openStock: string) {
     setOpenStock(openStock);
@@ -64,56 +89,56 @@ export default function HoldingsTable({
     volume: 1000,
   };
 
-  const stockHistory: StockDaysData[] = [
-    {
-      date: new Date("2021-10-01"),
-      close: 34.25,
-    },
-    {
-      date: new Date("2021-10-02"),
-      close: 35.8,
-    },
-    {
-      date: new Date("2021-10-03"),
-      close: 32.79,
-    },
-    {
-      date: new Date("2021-10-04"),
-      close: 33.25,
-    },
-    {
-      date: new Date("2021-10-05"),
-      close: 34.25,
-    },
-    {
-      date: new Date("2021-10-06"),
-      close: 35.8,
-    },
-    {
-      date: new Date("2021-10-07"),
-      close: 32.79,
-    },
-    {
-      date: new Date("2021-10-08"),
-      close: 33.25,
-    },
-    {
-      date: new Date("2021-10-09"),
-      close: 34.25,
-    },
-    {
-      date: new Date("2021-10-10"),
-      close: 35.8,
-    },
-    {
-      date: new Date("2021-10-11"),
-      close: 32.79,
-    },
-    {
-      date: new Date("2021-10-12"),
-      close: 33.25,
-    },
-  ];
+  // const stockHistory: StockDaysData[] = [
+  //   {
+  //     date: new Date("2021-10-01"),
+  //     close: 34.25,
+  //   },
+  //   {
+  //     date: new Date("2021-10-02"),
+  //     close: 35.8,
+  //   },
+  //   {
+  //     date: new Date("2021-10-03"),
+  //     close: 32.79,
+  //   },
+  //   {
+  //     date: new Date("2021-10-04"),
+  //     close: 33.25,
+  //   },
+  //   {
+  //     date: new Date("2021-10-05"),
+  //     close: 34.25,
+  //   },
+  //   {
+  //     date: new Date("2021-10-06"),
+  //     close: 35.8,
+  //   },
+  //   {
+  //     date: new Date("2021-10-07"),
+  //     close: 32.79,
+  //   },
+  //   {
+  //     date: new Date("2021-10-08"),
+  //     close: 33.25,
+  //   },
+  //   {
+  //     date: new Date("2021-10-09"),
+  //     close: 34.25,
+  //   },
+  //   {
+  //     date: new Date("2021-10-10"),
+  //     close: 35.8,
+  //   },
+  //   {
+  //     date: new Date("2021-10-11"),
+  //     close: 32.79,
+  //   },
+  //   {
+  //     date: new Date("2021-10-12"),
+  //     close: 33.25,
+  //   },
+  // ];
 
   return (
     <>

@@ -89,11 +89,24 @@ export const newPortfolioTrade = async (
         WHERE sd2.ticker_symbol = stock_day.ticker_symbol
       )
       AND stock_day.ticker_symbol = $3
+      LIMIT 1
     )
     WHERE owner_uid = $1::uuid AND name = $2
     `,
     [uid, name, symbol, amount]
   );
+
+  const res2 = await pool.query(
+    `
+    INSERT INTO portfolio_entry (owner_uid, portfolio_name, ticker_symbol, num_shares)
+    VALUES ($1::uuid, $2, $3, $4)
+    ON CONFLICT (owner_uid, portfolio_name, ticker_symbol) DO UPDATE
+    SET num_shares = portfolio_entry.num_shares + $4
+    `,
+    [uid, name, symbol, amount]
+  );
+
+  return camelize(res.rows);
 };
 
 export const getPortfolioHoldings = async (uid: string, name: string) => {
