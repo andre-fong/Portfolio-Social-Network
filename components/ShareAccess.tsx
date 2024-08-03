@@ -27,7 +27,6 @@ export default function ShareAccess() {
         endIcon={<PeopleAltRoundedIcon />}
         onClick={() => setShareModalOpen(true)}
         variant="contained"
-        sx={{ marginBottom: "30px" }}
       >
         Share
       </Button>
