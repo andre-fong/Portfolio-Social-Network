@@ -96,7 +96,25 @@ export const newPortfolioTrade = async (
 
 // TODO
 export const getPortfolioHoldings = async (uid: string, name: string) => {
-  ``;
+  const res = await pool.query(
+    ` SELECT 
+        ticker_symbol, 
+        num_shares,
+        close,
+        close * num_shares AS value,
+        close - LAG(close, 1) OVER (ORDER BY timestamp) AS unit_change, 
+        (close - LAG(close, 1) OVER (ORDER BY timestamp)) * num_shares AS total_change
+      FROM portfolio_entry
+      JOIN stock_day
+      ON portfolio_entry.ticker_symbol = stock_day.ticker_symbol
+      WHERE timestamp IN (
+        SELECT MAX(timestamp)
+        FROM stock_day sd2
+        WHERE sd2.ticker_symbol = stock_day.ticker_symbol
+      )
+      AND owner_uid = $1::uuid AND portfolio_name = $2`,
+    [uid, name]
+  );
 };
 
 export const getPortfolioEstValue = async (uid: string, name: string) => {

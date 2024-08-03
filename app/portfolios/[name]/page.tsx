@@ -3,17 +3,23 @@ import StockMatrix from "@/components/StockMatrix";
 import HoldingsTable from "@/components/HoldingsTable";
 import type { StockHoldings } from "@/types/Portfolio";
 import NewTrade from "@/components/NewTrade";
-import { getPortfolioDetails } from "@/database/portfolio";
 
 export default async function Portfolio({
   params,
 }: {
   params: { name: string };
 }) {
-  const res = await fetch("https://api.github.com/users/andre-fong", {
-    method: "GET",
-    credentials: "include",
-  });
+  const res = await fetch(
+    "http://localhost:3000/api/portfolio/" + params.name,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
   const data = await res.json();
 
   const portfolioValue = 220;
