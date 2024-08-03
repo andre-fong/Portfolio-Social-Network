@@ -127,7 +127,7 @@ export default async function StockList({
 
       <div className={styles.row} />
 
-      <StockMatrix />
+      {/* <StockMatrix /> */}
 
       <Reviews ownerUsername={owner} listName={listName} isOwner={isOwner} />
     </main>
