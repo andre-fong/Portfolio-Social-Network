@@ -55,7 +55,7 @@ export default async function StockList({
 
   const listings: StockHoldings[] = [
     {
-      symbol: "AAPL",
+      symbol: "A",
       shares: 5,
       price: 100,
       totalValue: 500,
@@ -63,7 +63,7 @@ export default async function StockList({
       totalChange: 50,
     },
     {
-      symbol: "TSLA",
+      symbol: "AAPL",
       shares: 5,
       price: 200,
       totalValue: 1000,
@@ -79,8 +79,6 @@ export default async function StockList({
       totalChange: -150,
     },
   ];
-  // const isOwner = true;
-  const isPublic = true;
 
   return (
     <main className={styles.container}>
@@ -97,7 +95,11 @@ export default async function StockList({
         <div className={styles.actions}>
           {isOwner && (
             <>
-              <ShareAccess />
+              <ShareAccess
+                isPublic={data.isPublic}
+                owner={owner}
+                listName={listName}
+              />
               <DeleteStockList owner={owner} listName={listName} />
             </>
           )}
@@ -116,7 +118,9 @@ export default async function StockList({
           Listings
         </h2>
 
-        <EditListings listings={listings} />
+        {isOwner && (
+          <EditListings listings={listings} owner={owner} listName={listName} />
+        )}
       </div>
 
       <HoldingsTable holdings={listings} />

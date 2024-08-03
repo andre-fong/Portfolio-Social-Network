@@ -99,8 +99,25 @@ export default function Reviews({
     });
   }
 
-  function deleteReview() {
-    console.log("TODO!!!!!!");
+  function deleteReview(reviewerUsername: string) {
+    fetch("/api/reviews", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        ownerUsername,
+        listName,
+        reviewerUsername,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          location.reload();
+        });
+      }
+    });
   }
 
   // const reviews: Review[] = [
@@ -188,7 +205,10 @@ export default function Reviews({
             </div>
 
             {isOwner && (
-              <IconButton sx={{ color: "darkred" }} onClick={deleteReview}>
+              <IconButton
+                sx={{ color: "darkred" }}
+                onClick={() => deleteReview(review.user)}
+              >
                 <DeleteRoundedIcon />
               </IconButton>
             )}
@@ -201,7 +221,10 @@ export default function Reviews({
                   {!editing ? <EditRoundedIcon /> : <CloseRoundedIcon />}
                 </IconButton>
 
-                <IconButton sx={{ color: "darkred" }} onClick={deleteReview}>
+                <IconButton
+                  sx={{ color: "darkred" }}
+                  onClick={() => deleteReview(review.user)}
+                >
                   <DeleteRoundedIcon />
                 </IconButton>
               </div>

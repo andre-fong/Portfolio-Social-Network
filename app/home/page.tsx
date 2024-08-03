@@ -7,19 +7,6 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { cookies } from "next/headers";
 
 export default async function Home() {
-  const yourUsername = "mandre";
-  const portfolioNames = ["Tech", "Healthcare", "Energy"];
-  const stockListNames = [
-    { name: "Farmers", isPublic: true },
-    { name: "Tech", isPublic: false },
-    { name: "Retail", isPublic: true },
-  ];
-  const sharedStockListNames = [
-    { name: "Auto", owner: "zanesun", isPublic: false },
-    { name: "Retail", owner: "zobiebuttz", isPublic: true },
-    { name: "Finance", owner: "victo", isPublic: false },
-  ];
-
   const portfolioRes = await fetch(
     "http://localhost:3000/api/dashboard/portfolios",
     {
@@ -68,9 +55,22 @@ export default async function Home() {
   );
   const sharedStockListData = await sharedStockListRes.json();
 
+  const youRes = await fetch("http://localhost:3000/api/you", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookies().toString(),
+    },
+    credentials: "include",
+    next: {
+      revalidate: 0,
+    },
+  });
+  const youData = await youRes.json();
+
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>Welcome, mandre.</h1>
+      <h1 className={styles.title}>Welcome, {youData.username}.</h1>
 
       <div className={styles.section}>
         <div className={styles.row}>
@@ -120,7 +120,7 @@ export default async function Home() {
         <div className={styles.stocklist_list}>
           {stockListData.map(
             ({ name, isPublic }: { name: string; isPublic: boolean }) => (
-              <Link href={`/stocklists/${yourUsername}/${name}`} key={name}>
+              <Link href={`/stocklists/${youData.username}/${name}`} key={name}>
                 <div className={styles.stocklist_card}>
                   <Image
                     src="/stocklist-asset.png"
