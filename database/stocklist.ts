@@ -12,7 +12,7 @@ export const newStockList = async (uid: string, name: string) => {
 
 export const deleteStockList = async (uid: string, name: string) => {
   const res = await pool.query(
-    `DELETE FROM stock_list WHERE owner_uid = $1 AND name = $2`,
+    `DELETE FROM stock_list WHERE owner_uid = $1::uuid AND name = $2`,
     [uid, name]
   );
 
@@ -31,12 +31,12 @@ export const getStockListDetails = async (
     JOIN account ON stock_list.owner_uid = account.uid
     WHERE username = $2
     AND name = $3
-    AND (is_public = true OR owner_uid = $1 OR EXISTS (
+    AND (is_public = true OR owner_uid = $1::uuid OR EXISTS (
       SELECT *
       FROM stock_list_share
       JOIN account ON stock_list_share.owner_uid = account.uid
       WHERE username = $2
-      AND shared_with_uid = $1
+      AND shared_with_uid = $1::uuid
       AND stock_list_name = $3
     ))
     `,
@@ -94,7 +94,7 @@ export const editStockListReview = async (
     SET content = $4
     WHERE owner_uid = (SELECT uid FROM account WHERE username = $2)
     AND stock_list_name = $3
-    AND reviewer_uid = $1`,
+    AND reviewer_uid = $1::uuid`,
     [uid, ownerUsername, name, content]
   );
 
