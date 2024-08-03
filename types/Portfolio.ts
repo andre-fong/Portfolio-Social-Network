@@ -11,13 +11,13 @@ export type StockHoldings = {
  * Stock details for most recent day
  */
 export type StockDetails = {
-  symbol: string;
+  tickerSymbol: string;
   /**
    * Most recent close price
    */
-  price: number;
-  change: number;
-  changePercent: number;
+  close: number;
+  closeDifference: number;
+  closeDifferencePercent: number;
   open: number;
   high: number;
   low: number;

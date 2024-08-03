@@ -19,7 +19,11 @@ export const getStockDetails = async (tickerSymbol: string) => {
       latest_close_difference.close_difference,
       latest_close_difference.close_difference / 
         (stock_day.close - latest_close_difference.close_difference)
-      AS close_difference_percent
+      AS close_difference_percent,
+      stock_day.open,
+      stock_day.high,
+      stock_day.low,
+      stock_day.volume
     FROM stock_day
     JOIN latest_close_difference
     ON stock_day.ticker_symbol = latest_close_difference.ticker_symbol
@@ -34,10 +38,13 @@ export const getStockHistory = async (
   numDays: number
 ) => {
   const res = await pool.query(
-    ` SELECT timestamp AS date, close FROM stock_day 
+    ` 
+    SELECT * FROM
+      (SELECT timestamp AS date, close FROM stock_day 
       WHERE ticker_symbol = $1
       ORDER BY timestamp DESC
-      LIMIT $2`,
+      LIMIT $2) AS stock_day
+    ORDER BY date ASC`,
     [tickerSymbol, numDays]
   );
   return camelize(res.rows);
