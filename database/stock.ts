@@ -34,7 +34,7 @@ export const getStockHistory = async (
   numDays: number
 ) => {
   const res = await pool.query(
-    ` SELECT ticker_symbol, close FROM stock_day 
+    ` SELECT timestamp AS date, close FROM stock_day 
       WHERE ticker_symbol = $1
       ORDER BY timestamp DESC
       LIMIT $2`,
