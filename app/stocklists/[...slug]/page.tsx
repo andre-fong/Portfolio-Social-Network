@@ -8,15 +8,51 @@ import Reviews from "@/components/Reviews";
 import ShareAccess from "@/components/ShareAccess";
 import EditListings from "@/components/EditListings";
 import DeleteStockList from "@/components/DeleteStockList";
+import { cookies } from "next/headers";
 import type { StockHoldings } from "@/types/Portfolio";
 
-export default function StockList({ params }: { params: { slug: string[] } }) {
+export default async function StockList({
+  params,
+}: {
+  params: { slug: string[] };
+}) {
   const owner = params.slug[0];
   const listName = params.slug[1];
 
   if (!owner || !listName) notFound();
 
-  const portfolioValue = 200;
+  const res = await fetch(
+    "http://localhost:3000/api/stocklists/" + owner + "/" + listName,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookies().toString(),
+      },
+      credentials: "include",
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
+  if (!res.ok) return notFound();
+  const data = (await res.json())[0];
+  if (!data) notFound();
+
+  const youRes = await fetch("http://localhost:3000/api/you", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookies().toString(),
+    },
+    credentials: "include",
+    next: {
+      revalidate: 0,
+    },
+  });
+  const you = await youRes.json();
+  const isOwner = you.username === owner;
+
   const listings: StockHoldings[] = [
     {
       symbol: "AAPL",
@@ -43,7 +79,7 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
       totalChange: -150,
     },
   ];
-  const isOwner = true;
+  // const isOwner = true;
   const isPublic = true;
 
   return (
@@ -52,21 +88,27 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
         <div className={styles.row}>
           <div className={styles.title_container}>
             <h1 className={styles.title}>{listName}</h1>
-            {isPublic && (
+            {data.isPublic && (
               <PublicRoundedIcon fontSize="large" sx={{ color: "gray" }} />
             )}
           </div>
         </div>
 
         <div className={styles.actions}>
-          {isOwner && <ShareAccess />}
-          <DeleteStockList owner={owner} listName={listName} />
+          {isOwner && (
+            <>
+              <ShareAccess />
+              <DeleteStockList owner={owner} listName={listName} />
+            </>
+          )}
         </div>
       </div>
 
       <div className={styles.owner_row}>
         <AccountCircleRoundedIcon />
-        <p className={styles.owner}>{owner}</p>
+        <p className={styles.owner}>
+          {owner} {isOwner && "(you)"}
+        </p>
       </div>
 
       <div className={styles.top_row} style={{ marginBottom: "20px" }}>
@@ -83,7 +125,7 @@ export default function StockList({ params }: { params: { slug: string[] } }) {
 
       <StockMatrix />
 
-      <Reviews />
+      <Reviews ownerUsername={owner} listName={listName} isOwner={isOwner} />
     </main>
   );
 }
