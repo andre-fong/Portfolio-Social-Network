@@ -1,5 +1,6 @@
 import camelize from "camelize";
 import { pool } from "./dbconfig";
+import type { Listings } from "@/types/StockList";
 
 export const newStockList = async (uid: string, name: string) => {
   const res = await pool.query(`INSERT INTO stock_list VALUES ($1, $2)`, [
@@ -124,6 +125,34 @@ export const deleteStockListReview = async (
     ) OR owner_uid = $4::uuid)
   `,
     [ownerUsername, name, reviewerUsername, uid]
+  );
+
+  return camelize(res.rows);
+};
+
+export const editStockListShares = async (
+  uid: string,
+  ownerUsername: string,
+  name: string,
+  listings: Listings[]
+) => {
+  const res = await pool.query(
+    `DELETE FROM stock_list_entry
+    WHERE owner_uid = (SELECT uid FROM account WHERE username = $2) 
+    AND owner_uid = $1::uuid
+    AND stock_list_name = $3`,
+    [uid, ownerUsername, name]
+  );
+
+  await Promise.all(
+    listings.map((listing) =>
+      pool.query(
+        `INSERT INTO stock_list_entry VALUES (
+          (SELECT uid FROM account WHERE username = $2 AND uid = $1::uuid), $3, $4, $5
+        )`,
+        [uid, ownerUsername, name, listing.symbol, listing.shares]
+      )
+    )
   );
 
   return camelize(res.rows);
