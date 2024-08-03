@@ -27,12 +27,12 @@ export default function StockMatrix({
 }) {
   const [matrixType, setMatrixType] = useState<StockMatrixType>("covariance");
 
-  console.log(correlationData);
-  const dataToCorrelationMatrix = (
+  const dataToMatrix = (
     data: {
       tickerSymbol1: string;
       tickerSymbol2: string;
-      correlation: number;
+      correlation?: number;
+      covariance?: number;
     }[]
   ) => {
     const matrix = Array(symbols.length)
@@ -42,29 +42,9 @@ export default function StockMatrix({
     data.forEach((datum) => {
       const i = symbols.indexOf(datum.tickerSymbol1);
       const j = symbols.indexOf(datum.tickerSymbol2);
-      matrix[i][j] = datum.correlation;
-      matrix[j][i] = datum.correlation;
-    });
-
-    return matrix;
-  };
-
-  const dataToCovarianceMatrix = (
-    data: {
-      tickerSymbol1: string;
-      tickerSymbol2: string;
-      covariance: number;
-    }[]
-  ) => {
-    const matrix = Array(symbols.length)
-      .fill(0)
-      .map(() => Array(symbols.length).fill(0));
-
-    data.forEach((datum) => {
-      const i = symbols.indexOf(datum.tickerSymbol1);
-      const j = symbols.indexOf(datum.tickerSymbol2);
-      matrix[i][j] = datum.covariance;
-      matrix[j][i] = datum.covariance;
+      const datumValue = datum.correlation || datum.covariance;
+      matrix[i][j] = datumValue;
+      matrix[j][i] = datumValue;
     });
 
     return matrix;
@@ -72,8 +52,8 @@ export default function StockMatrix({
 
   const matrix = {
     symbols: symbols,
-    correlation: dataToCorrelationMatrix(correlationData),
-    covariance: dataToCovarianceMatrix(covarianceData),
+    correlation: dataToMatrix(correlationData),
+    covariance: dataToMatrix(covarianceData),
   };
   console.log(matrix);
 
